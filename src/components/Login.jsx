@@ -1,17 +1,25 @@
 import { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import registerLogo from '../constants/assets/i (1).webp'
-import { loginUserStart } from '../slice/auth'
+import AuthService from '../service/auth'
+import { signUserFailure, signUserStart, signUserSuccess } from '../slice/auth'
 import Input from '../ui/Input'
 const Login = () => {
-	const [name, setName] = useState('')
+	const [password, setPassword] = useState('')
 	const [email, setEmail] = useState('')
 	const dispatch = useDispatch()
 	const { isLoading } = useSelector(state => state.auth)
 
-	const loginHandler = e => {
+	const loginHandler = async e => {
 		e.preventDefault()
-		dispatch(loginUserStart())
+		dispatch(signUserStart())
+		const user = { email, password }
+		try {
+			const response = await AuthService.userLogin(user)
+			dispatch(signUserSuccess(response.user))
+		} catch (error) {
+			dispatch(signUserFailure(error.response.data.errors))
+		}
 	}
 	return (
 		<div className='text-center mt-5'>
@@ -25,8 +33,8 @@ const Login = () => {
 						height={80}
 					/>
 					<h1 className='h3 mb-3 fw-normal'>Please login</h1>
-					<Input label={'Username'} state={name} setState={setName} />
 					<Input label={'Email address'} state={email} setState={setEmail} />
+					<Input label={'Password'} state={password} setState={setPassword} />
 
 					<button
 						className='w-100 btn btn-lg btn-primary mt-2'

@@ -2,11 +2,7 @@ import { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import registerLogo from '../constants/assets/i (1).webp'
 import AuthService from '../service/auth'
-import {
-	registerUserFailure,
-	registerUserStart,
-	registerUserSuccess,
-} from '../slice/auth'
+import { signUserFailure, signUserStart, signUserSuccess } from '../slice/auth'
 import Input from '../ui/Input'
 
 const Register = () => {
@@ -16,18 +12,15 @@ const Register = () => {
 	const dispatch = useDispatch()
 	const { isLoading } = useSelector(state => state.auth)
 
-	const loginHandler = async e => {
+	const registerHandler = async e => {
 		e.preventDefault()
-		dispatch(registerUserStart())
+		dispatch(signUserStart())
 		const user = { username: name, email, password }
 		try {
 			const response = await AuthService.userRegister(user)
-			console.log(response)
-			console.log(user)
-
-			dispatch(registerUserSuccess())
+			dispatch(signUserSuccess(response.user))
 		} catch (error) {
-			dispatch(registerUserFailure())
+			dispatch(signUserFailure(error.response.data.errors))
 		}
 	}
 	return (
@@ -54,7 +47,7 @@ const Register = () => {
 						className='w-100 btn btn-lg btn-primary mt-2'
 						disabled={isLoading}
 						type='submit'
-						onClick={loginHandler}
+						onClick={registerHandler}
 					>
 						{isLoading ? 'loading...' : 'Register'}
 					</button>
