@@ -4,6 +4,7 @@ import registerLogo from '../constants/assets/i (1).webp'
 import AuthService from '../service/auth'
 import { signUserFailure, signUserStart, signUserSuccess } from '../slice/auth'
 import Input from '../ui/Input'
+import ValidationsError from './ValidationsError'
 
 const Register = () => {
 	const [name, setName] = useState('')
@@ -20,6 +21,7 @@ const Register = () => {
 			const response = await AuthService.userRegister(user)
 			dispatch(signUserSuccess(response.user))
 		} catch (error) {
+			console.log(error.response.data.errors)
 			dispatch(signUserFailure(error.response.data.errors))
 		}
 	}
@@ -35,6 +37,7 @@ const Register = () => {
 						height={80}
 					/>
 					<h1 className='h3 mb-3 fw-normal'>Please register</h1>
+					<ValidationsError />
 					<Input label={'Username'} state={name} setState={setName} />
 					<Input label={'Email address'} state={email} setState={setEmail} />
 					<Input

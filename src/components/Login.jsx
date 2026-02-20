@@ -4,6 +4,7 @@ import registerLogo from '../constants/assets/i (1).webp'
 import AuthService from '../service/auth'
 import { signUserFailure, signUserStart, signUserSuccess } from '../slice/auth'
 import Input from '../ui/Input'
+import ValidationsError from './ValidationsError'
 const Login = () => {
 	const [password, setPassword] = useState('')
 	const [email, setEmail] = useState('')
@@ -33,6 +34,7 @@ const Login = () => {
 						height={80}
 					/>
 					<h1 className='h3 mb-3 fw-normal'>Please login</h1>
+					<ValidationsError />
 					<Input label={'Email address'} state={email} setState={setEmail} />
 					<Input label={'Password'} state={password} setState={setPassword} />
 
