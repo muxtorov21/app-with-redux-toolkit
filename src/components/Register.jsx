@@ -1,5 +1,6 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
+import { useNavigate } from 'react-router-dom'
 import registerLogo from '../constants/assets/i (1).webp'
 import AuthService from '../service/auth'
 import { signUserFailure, signUserStart, signUserSuccess } from '../slice/auth'
@@ -11,7 +12,8 @@ const Register = () => {
 	const [email, setEmail] = useState('')
 	const [password, setPassword] = useState('')
 	const dispatch = useDispatch()
-	const { isLoading } = useSelector(state => state.auth)
+	const { isLoading, loggedIn } = useSelector(state => state.auth)
+	const navigate = useNavigate()
 
 	const registerHandler = async e => {
 		e.preventDefault()
@@ -20,11 +22,17 @@ const Register = () => {
 		try {
 			const response = await AuthService.userRegister(user)
 			dispatch(signUserSuccess(response.user))
+			navigate('/')
 		} catch (error) {
 			console.log(error.response.data.errors)
 			dispatch(signUserFailure(error.response.data.errors))
 		}
 	}
+	useEffect(() => {
+		if (loggedIn) {
+			navigate('/')
+		}
+	})
 	return (
 		<div className='text-center mt-5'>
 			<main className='form-signin w-25 m-auto'>
